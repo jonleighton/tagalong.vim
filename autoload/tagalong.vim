@@ -1,5 +1,5 @@
-let s:opening_regex     = '<\zs\k[^>/[:space:]]*'
-let s:closing_regex     = '<\/\zs\k[^>[:space:]]*\ze>'
+let s:opening_regex     = '<\zs\%(\k[^>/[:space:]]*\|\ze>\)'
+let s:closing_regex     = '<\/\zs\k\=[^>[:space:]]*\ze>'
 let s:opening_end_regex = '\%(\_[^>]\{-}\_[^\/]\)\=>'
 
 function! tagalong#Init()
@@ -251,7 +251,14 @@ function! s:GetChangePositions()
       endif
       let opening_position = getpos('.')
 
-      if opening_position != closing_position && tagalong#util#SearchUnderCursor('<\V'.tag.'\m\>', 'n')
+      if tag == ''
+        " special case, React-style <> </> tags
+        let opening_pattern = '<>'
+      else
+        let opening_pattern = '<\V'.tag.'\m\>'
+      endif
+
+      if opening_position != closing_position && tagalong#util#SearchUnderCursor(opening_pattern, 'n')
         return {
               \ 'source':           'closing',
               \ 'old_tag':          tag,
@@ -323,8 +330,14 @@ function! s:JumpPair(direction, tag)
     return 0
   endif
 
-  let start_pattern = '<\zs\V'   . a:tag . '\m' . s:opening_end_regex
-  let end_pattern   = '<\/\zs\V' . a:tag . '\m>'
+  if a:tag == ''
+    " special case, React-style <> </> fragments:
+    let start_pattern = '<\zs>'
+    let end_pattern   = '</\zs>'
+  else
+    let start_pattern = '<\zs\V'   . a:tag . '\m' . s:opening_end_regex
+    let end_pattern   = '<\/\zs\V' . a:tag . '\m>'
+  endif
 
   return searchpair(start_pattern, '', end_pattern, flags, '', 0, g:tagalong_timeout)
 endfunction
