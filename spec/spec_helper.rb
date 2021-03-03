@@ -11,6 +11,7 @@ Vimrunner::RSpec.configure do |config|
     vim = Vimrunner.start_gvim
     vim.set('backspace', 'indent,eol,start')
     vim.add_plugin(plugin_path, 'plugin/tagalong.vim')
+    vim.command('autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact')
     vim
   end
 end

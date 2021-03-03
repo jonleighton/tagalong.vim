@@ -4,12 +4,7 @@ function! tagalong#delete#Visual()
   call tagalong#Apply()
 endfunction
 
-function! tagalong#delete#Normal(type = '')
-  if a:type == ''
-    set opfunc=tagalong#delete#Normal
-    return 'g@'
-  endif
-
+function! tagalong#delete#Normal(type)
   let saved_range_start = getpos("'[")
   let saved_range_end = getpos("']")
   call tagalong#Trigger()

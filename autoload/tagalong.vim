@@ -347,7 +347,7 @@ endfunction
 
 function! s:MapDelete(key)
   exe 'xnoremap <buffer> ' . a:key . ' :<c-u>call tagalong#delete#Visual()<cr>'
-  exe 'nnoremap <buffer><expr> ' . a:key . ' tagalong#delete#Normal()'
+  exe 'nnoremap <buffer> ' . a:key . ' :set opfunc=tagalong#delete#Normal<CR>g@'
 
   " Avoid mapping dd, doesn't quite work like a motion
   exe 'nnoremap <buffer> ' . a:key . 'd dd'
