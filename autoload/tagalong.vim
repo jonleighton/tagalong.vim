@@ -1,6 +1,6 @@
 let s:opening_regex     = '<\zs\%(\k[^>/[:space:]]*\|\ze>\)'
 let s:closing_regex     = '<\/\zs\k\=[^>[:space:]]*\ze>'
-let s:opening_end_regex = '\%(\_[^>]\{-}\_[^\/]\)\=>'
+let s:opening_end_regex = '\_[^>]\{-}\_[^\/]\{-}>'
 
 function! tagalong#Init()
   if exists('b:tagalong_initialized')

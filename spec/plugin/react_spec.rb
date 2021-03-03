@@ -72,5 +72,26 @@ RSpec.describe "React tags" do
         );
       HTML
     end
+
+    specify "editing an tag with no content" do
+      set_file_contents <<~HTML
+        return (
+          <>
+
+          </>
+        );
+      HTML
+
+      vim.search('<\zs>')
+      edit('ifoobar')
+
+      assert_file_contents <<~HTML
+        return (
+          <foobar>
+
+          </foobar>
+        );
+      HTML
+    end
   end
 end
