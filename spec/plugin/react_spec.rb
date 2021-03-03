@@ -49,5 +49,28 @@ RSpec.describe "React tags" do
         );
       HTML
     end
+
+    specify "deletion" do
+      set_file_contents <<~HTML
+        return (
+          <React.Fragment>
+            <td>Hello</td>
+            <td>World</td>
+          </React.Fragment>
+        );
+      HTML
+
+      vim.search('<\zsReact\.')
+      edit('di>')
+
+      assert_file_contents <<~HTML
+        return (
+          <>
+            <td>Hello</td>
+            <td>World</td>
+          </>
+        );
+      HTML
+    end
   end
 end

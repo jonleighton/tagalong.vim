@@ -31,7 +31,7 @@ if !exists('g:tagalong_excluded_filetype_combinations')
 endif
 
 if !exists('g:tagalong_mappings')
-  let g:tagalong_mappings = ['c', 'C', 'v', 'i', 'a']
+  let g:tagalong_mappings = ['c', 'C', 'v', 'i', 'a', 'd']
 endif
 
 if !exists('g:tagalong_verbose')

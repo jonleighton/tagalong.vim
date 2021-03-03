@@ -104,4 +104,21 @@ RSpec.describe "Change types" do
       </span>
     HTML
   end
+
+  specify "deletion with d" do
+    set_file_contents <<~HTML
+      <div class="test">
+        <span>Text</span>
+      </div>
+    HTML
+
+    vim.search('<\zsdiv')
+    edit('dtv')
+
+    assert_file_contents <<~HTML
+      <v class="test">
+        <span>Text</span>
+      </v>
+    HTML
+  end
 end

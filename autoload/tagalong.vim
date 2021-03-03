@@ -12,9 +12,15 @@ function! tagalong#Init()
     if type(key) == type({})
       " e.g. {'c': '<leader>c'}
       for [native_key, override_key] in items(key)
-        exe 'nnoremap <buffer><silent> ' . override_key .
-              \ ' :<c-u>call tagalong#Trigger("' . escape(native_key, '"') . '", v:count)<cr>'
+        if native_key == 'd'
+          call s:MapDelete(override_key)
+        else
+          exe 'nnoremap <buffer><silent> ' . override_key .
+                \ ' :<c-u>call tagalong#Trigger("' . escape(native_key, '"') . '", v:count)<cr>'
+        endif
       endfor
+    elseif key == 'd'
+      call s:MapDelete('d')
     else
       " it's just a key
       let mapping = maparg(key, 'n')
@@ -40,7 +46,11 @@ function! tagalong#Deinit()
   unlet b:tagalong_initialized
 
   for key in g:tagalong_mappings
-    exe 'unmap <buffer> '.key
+    if key == 'd'
+      call s:UnmapDelete()
+    else
+      exe 'unmap <buffer> '.key
+    endif
   endfor
 
   exe 'augroup tagalong_'.bufnr('%')
@@ -297,13 +307,6 @@ function! s:FillChangeContents(change)
     return
   endif
 
-  if new_tag !~ '^[^<>]\+$'
-    " we've had a change that resulted in something weird, like an empty
-    " <></>, bail out
-    call tagalong#util#PopCursor()
-    return {}
-  endif
-
   if new_tag ==# change.old_tag
     " nothing to change
     call tagalong#util#PopCursor()
@@ -340,4 +343,17 @@ function! s:JumpPair(direction, tag)
   endif
 
   return searchpair(start_pattern, '', end_pattern, flags, '', 0, g:tagalong_timeout)
+endfunction
+
+function! s:MapDelete(key)
+  exe 'xnoremap <buffer> ' . a:key . ' :<c-u>call tagalong#delete#Visual()<cr>'
+  exe 'nnoremap <buffer><expr> ' . a:key . ' tagalong#delete#Normal()'
+
+  " Avoid mapping dd, doesn't quite work like a motion
+  exe 'nnoremap <buffer> ' . a:key . 'd dd'
+endfunction
+
+function! s:UnmapDelete()
+  unmap <buffer> d
+  unmap <buffer> dd
 endfunction

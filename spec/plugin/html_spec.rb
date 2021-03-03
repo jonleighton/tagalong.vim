@@ -66,7 +66,9 @@ RSpec.describe "HTML" do
     HTML
   end
 
-  specify "invalid tag changes" do
+  specify "empty tag change" do
+    # This is sort-of valid in React, and it could just be a temporary state
+    # anyway
     set_file_contents <<~HTML
       <div class="example">
         <span>Text</span>
@@ -79,7 +81,7 @@ RSpec.describe "HTML" do
     assert_file_contents <<~HTML
       < class="example">
         <span>Text</span>
-      </div>
+      </>
     HTML
 
     vim.search('span')
@@ -87,8 +89,8 @@ RSpec.describe "HTML" do
 
     assert_file_contents <<~HTML
       < class="example">
-        <>Text</span>
-      </div>
+        <>Text</>
+      </>
     HTML
   end
 
